@@ -1,0 +1,30 @@
+pipelines:
+  tutor-response:
+    description: "Generates localized STEM explanations."
+    inputs:
+      - name: question
+        type: text
+    outputs:
+      - name: answer
+        type: text
+      - name: follow_up_suggestions
+        type: list
+    runtime: "cloud"
+
+  quiz-builder:
+    description: "Creates short quizzes for targeted STEM practice."
+    inputs:
+      - name: topic
+        type: text
+    outputs:
+      - name: questions
+        type: list
+    runtime: "cloud"
+
+integrations:
+  firestore:
+    project_id: "YOUR_FIREBASE_PROJECT_ID"
+    collections:
+      - learners
+      - quizzes
+      - tutor_sessions
