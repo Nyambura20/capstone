@@ -189,11 +189,58 @@ button:active {
   min-height: 200px;
   max-height: 500px;
   animation: slideIn 0.4s ease-out;
+  display: flex;
+  flex-direction: column;
+  scroll-behavior: smooth;
 }
+
 
 .chat-message {
   margin-bottom: 1.5rem;
   animation: messageSlide 0.4s ease-out;
+  position: relative;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.chat-message:first-child {
+  border-bottom: none;
+}
+
+.chat-message.latest {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid #10b981;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+  border-bottom: none;
+}
+
+.latest-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
+  }
 }
 
 .loading-message {
@@ -259,6 +306,16 @@ button:active {
   border-radius: 10px;
   box-shadow: var(--shadow-sm);
   border-left: 3px solid #3a7bd5;
+  position: relative;
+}
+
+.output-area li.latest-quiz {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border: 2px solid #10b981;
+  border-left: 4px solid #059669;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+  margin-bottom: 2rem;
 }
 
 .output-area li strong {

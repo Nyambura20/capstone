@@ -2,7 +2,67 @@ export default class Dashboard {
   constructor(rootElement) {
     this.root = rootElement;
     this.outputArea = null;
+    this.learningStats = this.loadStats();
     this.render();
+  }
+
+  loadStats() {
+    const stored = localStorage.getItem('edumentor_learning_stats');
+    if (!stored) {
+      return {
+        streakDays: 0,
+        lastActiveDate: null,
+        totalQuestions: 0,
+        totalQuizzes: 0,
+        topicsExplored: 0,
+        engagementScore: 0,
+        masteredTopics: [],
+        reviewTopics: []
+      };
+    }
+    return JSON.parse(stored);
+  }
+
+  saveStats(stats) {
+    localStorage.setItem('edumentor_learning_stats', JSON.stringify(stats));
+    this.learningStats = stats;
+  }
+
+  updateStreak() {
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const lastActive = this.learningStats.lastActiveDate;
+
+    if (lastActive === today) {
+      // Already active today, no change
+      return this.learningStats.streakDays;
+    }
+
+    if (!lastActive) {
+      // First time user
+      this.learningStats.streakDays = 1;
+      this.learningStats.lastActiveDate = today;
+      this.saveStats(this.learningStats);
+      return 1;
+    }
+
+    const lastDate = new Date(lastActive);
+    const currentDate = new Date(today);
+    const diffTime = currentDate - lastDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) {
+      // Consecutive day - increment streak
+      this.learningStats.streakDays += 1;
+      this.learningStats.lastActiveDate = today;
+      this.saveStats(this.learningStats);
+    } else if (diffDays > 1) {
+      // Streak broken - reset to 1
+      this.learningStats.streakDays = 1;
+      this.learningStats.lastActiveDate = today;
+      this.saveStats(this.learningStats);
+    }
+
+    return this.learningStats.streakDays;
   }
 
   render() {
@@ -19,15 +79,33 @@ export default class Dashboard {
   }
 
   renderSummary(summary) {
+    // Update streak based on today's activity
+    const currentStreak = this.updateStreak();
+
+    // Merge backend stats with persisted streak
+    const mergedStats = {
+      streakDays: currentStreak,
+      masteredTopics: summary.masteredTopics || [],
+      reviewTopics: summary.reviewTopics || [],
+      engagementScore: summary.engagementScore || 0,
+      totalQuestions: summary.totalQuestions || 0,
+      totalQuizzes: summary.totalQuizzes || 0,
+      topicsExplored: summary.topicsExplored || 0,
+      lastActiveDate: this.learningStats.lastActiveDate
+    };
+
+    // Save merged stats
+    this.saveStats(mergedStats);
+
     const { 
-      streakDays = 0, 
-      masteredTopics = [], 
-      reviewTopics = [], 
-      engagementScore = 0,
-      totalQuestions = 0,
-      totalQuizzes = 0,
-      topicsExplored = 0
-    } = summary;
+      streakDays, 
+      masteredTopics, 
+      reviewTopics, 
+      engagementScore,
+      totalQuestions,
+      totalQuizzes,
+      topicsExplored
+    } = mergedStats;
 
     // Empty state message
     const emptyState = !totalQuestions && !totalQuizzes ? `

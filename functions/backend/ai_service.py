@@ -70,36 +70,32 @@ class AIService:
         
         try:
             # Create a detailed prompt for African-contextualized STEM education
-            prompt = f"""You are EduMentor, an AI tutor specialized in STEM education for African students.
+            prompt = f"""You are EduMentor, an AI tutor for African students.
 
-CRITICAL INSTRUCTION: You MUST use African examples and context in EVERY explanation.
-
-African Examples to Use:
-- Transportation: boda-bodas (motorcycle taxis), matatus (minibuses), tuk-tuks, bicycles
-- Geography: Sahara Desert, Great Rift Valley, Lake Victoria, Mount Kilimanjaro, Niger River
-- Agriculture: cassava, maize, sorghum, millet, yams, coffee, cocoa farming
-- Energy: solar panels in villages, biogas from agricultural waste, hydroelectric dams
-- Wildlife: elephants, lions, giraffes, zebras, migratory patterns
-- Infrastructure: clay brick houses, thatched roofs, water wells, irrigation systems
-- Technology: mobile money (M-Pesa), solar-powered devices, SMS-based systems
-- Daily life: marketplaces, community gatherings, traditional crafts
+CORE REQUIREMENT: You MUST integrate African examples throughout your explanation, not just at the end.
 
 Student Question: {question}
 
-Your Response Must Include:
-1. Start with a relatable African scenario or example
-2. Explain the concept clearly (3-4 paragraphs)
-3. Use at least 2-3 specific African examples from the list above
-4. Connect to practical applications in African communities
-5. Use simple language suitable for high school students
+Instructions:
+1. Keep your answer brief and engaging (3-5 short sentences or bullet points)
+2. START with a relatable African context or example that connects to the concept
+3. Explain the science clearly using simple language
+4. Include 1-2 more African examples WITHIN the explanation (boda-bodas, matatus, cassava farms, Lake Victoria, solar panels in villages, M-Pesa, etc.)
+5. End with a practical application relevant to African communities
+6. Provide 2 short follow-up questions
 
-Then provide three follow-up questions the student might ask.
+African Context Examples to Use:
+- Transportation: boda-bodas, matatus, tuk-tuks
+- Agriculture: cassava, maize farming, irrigation
+- Technology: M-Pesa, solar panels, mobile networks
+- Geography: Lake Victoria, Mount Kilimanjaro, Sahara Desert
+- Daily life: marketplaces, water wells, community gatherings
 
 Format your response as:
-ANSWER: [Start with African example, then detailed explanation with more African context]
+ANSWER: [Start with African example, explain the science briefly using 2-3 more African examples integrated throughout, end with practical application]
 FOLLOW_UP_1: [first follow-up question]
 FOLLOW_UP_2: [second follow-up question]
-FOLLOW_UP_3: [third follow-up question]"""
+"""
 
             response = self.model.generate_content(prompt)
             return self._parse_response(response.text, question)
@@ -177,29 +173,24 @@ FOLLOW_UP_3: [third follow-up question]"""
             return self._fallback_quiz(topic, num_questions)
         
         try:
-            prompt = f"""You are creating a STEM quiz for African high school students on: {topic}
+            prompt = f"""You are creating a STEM quiz on: {topic}
 
-CRITICAL: Every question MUST use African context and examples.
+Instructions for questions:
+- Create {num_questions} clear multiple-choice or short-answer questions that focus on core concepts.
+- DO NOT include region-specific or African context in the question text. Keep questions neutral.
 
-African Context Examples:
-- Real-world scenarios: farming, transportation, energy access, water systems
-- Local examples: boda-bodas, matatus, solar panels, cassava farms, Lake Victoria
-- Practical applications: mobile money, irrigation, renewable energy, local industries
+Instructions for answers/explanations:
+- For each question include the correct answer and a one-sentence explanation that includes a brief African example or application.
 
-Create {num_questions} quiz questions that:
-- Test conceptual understanding, not just memorization
-- Use specific African examples in EVERY question
-- Are relevant to students' daily lives in Africa
-- Include practical application scenarios
-- Are appropriate for high school level
-
-Format each question as:
-Q[number]: [Question text with African context]
-A[number]: [Correct answer with brief explanation using African examples]
+Output format exactly as:
+Q1: [Question text]
+A1: [Correct answer]
+E1: [One-sentence explanation that includes a short African example]
 
 Example:
-Q1: A boda-boda rider in Kampala accelerates from rest to 15 m/s in 5 seconds. What is the acceleration?
-A1: Using a = (v-u)/t, the acceleration is (15-0)/5 = 3 m/s². This means the boda-boda's speed increases by 3 meters per second every second during acceleration.
+Q1: What is acceleration?
+A1: 3 m/s^2
+E1: Using a = (v-u)/t; Example: a boda-boda accelerating from 0 to 15 m/s in 5 s gives 3 m/s^2.
 """
 
             response = self.model.generate_content(prompt)
